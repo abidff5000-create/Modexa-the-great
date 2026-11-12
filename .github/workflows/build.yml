@@ -40,8 +40,14 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: 4. Set up Android SDK
-        uses: android-actions/setup-android@v3
+      - name: 4. Accept Android SDK licenses
+        shell: bash
+        run: |
+          SDK="${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          echo "SDK: $SDK"
+          echo "ANDROID_HOME=$SDK" >> "$GITHUB_ENV"
+          yes | "$SDK/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$SDK" --licenses > /dev/null || true
+          ls "$SDK/licenses"
 
       - name: 5. Set up Gradle 8.7
         uses: gradle/actions/setup-gradle@v4
